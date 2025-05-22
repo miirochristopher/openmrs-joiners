@@ -1,4 +1,4 @@
-package com.newopenmrs.joinners;
+package com.openmrs.joiners;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
