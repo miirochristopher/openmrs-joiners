@@ -1,11 +1,11 @@
 package com.openmrs.joiners.controller;
 
-import entity.Person;
+import com.openmrs.joiners.entity.Person;
+import com.openmrs.joiners.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import service.PersonService;
 
 import java.util.List;
 
