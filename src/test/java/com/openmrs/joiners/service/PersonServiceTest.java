@@ -12,6 +12,9 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class PersonServiceTest {
@@ -23,7 +26,7 @@ public class PersonServiceTest {
     private PersonService personService;
 
     @Test
-    void getAllPersons(){
+    void getAllPersons() {
         Person person1 = new Person(1, "Timothy Buyondo", "Mpigi");
         Person person2 = new Person(2, "Resty Tuta", "Nakisunga");
 
@@ -34,5 +37,18 @@ public class PersonServiceTest {
 
         assertThat(personList).isNotNull();
         assertThat(personList.size()).isEqualTo(2);
+    }
+
+    @Test
+    void savePerson() {
+        Person person = new Person(3, "John Smith", "Kampala");
+
+        when(personService.savePerson(person)).thenReturn(person);
+        Person personToSave = personService.savePerson(person);
+        verify(personRepository,times(1)).save(person);
+
+        assertThat(person).isNotNull();
+        assertThat(personToSave.getPersonName()).isEqualTo("John Smith");
+        assertThat(personToSave.getPersonAddress()).isEqualTo("Kampala");
     }
 }
