@@ -47,7 +47,7 @@ public class PersonServiceTest {
         Person personToSave = personService.savePerson(person);
         verify(personRepository,times(1)).save(person);
 
-        assertThat(person).isNotNull();
+        assertThat(personToSave).isNotNull();
         assertThat(personToSave.getPersonName()).isEqualTo("John Smith");
         assertThat(personToSave.getPersonAddress()).isEqualTo("Kampala");
     }
