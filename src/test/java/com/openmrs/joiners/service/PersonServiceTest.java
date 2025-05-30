@@ -51,4 +51,17 @@ public class PersonServiceTest {
         assertThat(personToSave.getPersonName()).isEqualTo("John Smith");
         assertThat(personToSave.getPersonAddress()).isEqualTo("Kampala");
     }
+
+    @Test
+    void updatePerson(){
+        Person person = new Person(4, "Okwere Donald", "Washiso");
+        when(personRepository.existsById(person.getPersonId())).thenReturn(true);
+        when(personRepository.save(person)).thenReturn(person);
+        Person personToUpdate = personService.updatePerson(person);
+        verify(personRepository, times(1)).save(person);
+
+        assertThat(personToUpdate).isNotNull();
+        assertThat(personToUpdate.getPersonName()).isEqualTo("Okwere Donald");
+        assertThat(personToUpdate.getPersonId()).isEqualTo(4);
+    }
 }
