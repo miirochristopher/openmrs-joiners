@@ -9,9 +9,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -53,15 +55,28 @@ public class PersonServiceTest {
     }
 
     @Test
-    void updatePerson(){
-        Person person = new Person(4, "Okwere Donald", "Washiso");
-        when(personRepository.existsById(person.getPersonId())).thenReturn(true);
-        when(personRepository.save(person)).thenReturn(person);
-        Person personToUpdate = personService.updatePerson(person);
-        verify(personRepository, times(1)).save(person);
+    void saveOrUpdatePerson(){
+        //Person record to be fetched from the DB for updating
+        Person existingPerson = new Person(4, "Okwere Donald", "Washiso");
 
-        assertThat(personToUpdate).isNotNull();
-        assertThat(personToUpdate.getPersonName()).isEqualTo("Okwere Donald");
-        assertThat(personToUpdate.getPersonId()).isEqualTo(4);
+        //updated Result
+        Person updatedPerson = new Person(4, "Mutebi Martin", "Kampala");
+
+        //Expected result by the test
+        Person expectedUpdated = new Person(4, "Mutebi Martin", "Kampala");
+
+        when(personRepository.findById(4)).thenReturn(Optional.of(existingPerson));
+        when(personRepository.save(existingPerson)).thenReturn(expectedUpdated);
+
+        Person result = personService.saveOrUpdatePerson(updatedPerson);
+
+        // Verifications
+        verify(personRepository, times(1)).findById(4);
+        verify(personRepository, times(1)).save(existingPerson);
+
+        // Assertions
+        assertThat(result).isNotNull();
+        assertThat(result.getPersonName()).isEqualTo("Mutebi Martin");
+        assertThat(result.getPersonAddress()).isEqualTo("Kampala");
     }
 }

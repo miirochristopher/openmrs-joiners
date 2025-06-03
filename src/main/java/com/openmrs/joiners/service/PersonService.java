@@ -22,10 +22,15 @@ public class PersonService{
         return personRepository.save(person);
     }
 
-    public Person updatePerson(Person updatedPerson){
-        if (!personRepository.existsById(updatedPerson.getPersonId())) {
-            throw new EntityNotFoundException("Person not found with ID: " + updatedPerson.getPersonId());
-        }
-        return personRepository.save(updatedPerson);
+    public Person saveOrUpdatePerson(Person updatedPerson){
+        int personId = updatedPerson.getPersonId();
+        Person existingPerson = personRepository.findById(personId)
+                .orElseThrow(() -> new EntityNotFoundException("Person not found with ID: " + personId));
+
+        // Update fields
+        existingPerson.setPersonName(updatedPerson.getPersonName());
+        existingPerson.setPersonAddress(updatedPerson.getPersonAddress());
+
+        return personRepository.save(existingPerson);
     }
 }

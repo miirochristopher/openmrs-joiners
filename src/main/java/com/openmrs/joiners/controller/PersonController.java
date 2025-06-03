@@ -21,8 +21,8 @@ public class PersonController {
         return ResponseEntity.ok(personService.getAllPersons());
     }
 
-    @PutMapping(value = "/update/department")
+    @PutMapping(value = "/update/person")
     public ResponseEntity <Person> updatePerson(@RequestBody Person updatedPerson){
-        return ResponseEntity.ok(personService.updatePerson(updatedPerson));
+        return ResponseEntity.noContent().build();
     }
 }
