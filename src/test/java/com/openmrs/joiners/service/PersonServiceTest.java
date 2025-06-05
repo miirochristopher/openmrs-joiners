@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
@@ -55,28 +56,32 @@ public class PersonServiceTest {
     }
 
     @Test
-    void saveOrUpdatePerson(){
-        //Person record to be fetched from the DB for updating
-        Person existingPerson = new Person(4, "Okwere Donald", "Washiso");
+    void updatePerson(){
+        // Existing person in DB
+        Person person1 = new Person();
+        person1.setPersonId(1);
+        person1.setPersonName("Mutumba Martin");
+        person1.setPersonAddress("Kawempe");
 
-        //updated Result
-        Person updatedPerson = new Person(4, "Mutebi Martin", "Kampala");
+        // new update object
+        Person newPerson = new Person();
+        newPerson.setPersonId(1);
+        newPerson.setPersonName("Muwonge Rashid");
+        newPerson.setPersonAddress("Kampala");
 
-        //Expected result by the test
-        Person expectedUpdated = new Person(4, "Mutebi Martin", "Kampala");
+        when(personRepository.findById(1)).thenReturn(Optional.of(person1));
+        when(personRepository.save(any(Person.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        when(personRepository.findById(4)).thenReturn(Optional.of(existingPerson));
-        when(personRepository.save(existingPerson)).thenReturn(expectedUpdated);
+        // Perform the update
+        Person result = personService.updatePerson(newPerson);
 
-        Person result = personService.saveOrUpdatePerson(updatedPerson);
+        // Verify interactions
+        verify(personRepository, times(1)).findById(1);
+        verify(personRepository, times(1)).save(person1);
 
-        // Verifications
-        verify(personRepository, times(1)).findById(4);
-        verify(personRepository, times(1)).save(existingPerson);
-
-        // Assertions
+        // Assert changes
         assertThat(result).isNotNull();
-        assertThat(result.getPersonName()).isEqualTo("Mutebi Martin");
+        assertThat(result.getPersonName()).isEqualTo("Muwonge Rashid");
         assertThat(result.getPersonAddress()).isEqualTo("Kampala");
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PersonService{
@@ -22,15 +23,16 @@ public class PersonService{
         return personRepository.save(person);
     }
 
-    public Person saveOrUpdatePerson(Person updatedPerson){
-        int personId = updatedPerson.getPersonId();
-        Person existingPerson = personRepository.findById(personId)
-                .orElseThrow(() -> new EntityNotFoundException("Person not found with ID: " + personId));
+    public Person updatePerson(Person person) {
+        Optional<Person> existingPerson = personRepository.findById(person.getPersonId());
+        Person personToUpdate = new Person();
+        if (existingPerson.isPresent()) {
+            personToUpdate = existingPerson.get();
 
-        // Update fields
-        existingPerson.setPersonName(updatedPerson.getPersonName());
-        existingPerson.setPersonAddress(updatedPerson.getPersonAddress());
-
-        return personRepository.save(existingPerson);
+            // Update fields
+            personToUpdate.setPersonName(person.getPersonName());
+            personToUpdate.setPersonAddress(person.getPersonAddress());
+        }
+        return personRepository.save(personToUpdate);
     }
 }
